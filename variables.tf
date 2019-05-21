@@ -1,15 +1,3 @@
-// variable "environment" {
-//   type        = "string"
-//   default     = "dev"
-//   description = "The environment the infrastructure is provisioned in. e.g. dev, qa, uat and prod"
-// }
-
-variable "region" {
-  type        = "string"
-  default     = "eu-west-1"
-  description = "The AWS region for the infrastructure to be provisioned in"
-}
-
 variable "name" {
   type        = "string"
   default     = ""
@@ -24,28 +12,28 @@ variable "resource_tags" {
 
 variable "vpc_cidr" {
   type        = "string"
-  description = "The CIDR block for the VPC."
+  description = "The CIDR block for the VPC"
 }
 
-variable "enable_dns_support" {
+variable "vpc_enable_dns_support" {
   type        = "string"
   default     = "true"
   description = "A boolean flag to enable/disable DNS support in the VPC"
 }
 
-variable "enable_dns_hostnames" {
+variable "vpc_enable_dns_hostnames" {
   type        = "string"
   default     = "false"
   description = "A boolean flag to enable/disable DNS hostnames in the VPC"
 }
 
-variable "assign_generated_ipv6_cidr_block" {
+variable "vpc_assign_generated_ipv6_cidr_block" {
   type        = "string"
   default     = "false"
   description = "Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for the VPC. You cannot specify the range of IP addresses, or the size of the CIDR block"
 }
 
-variable "secondary_cidr_blocks" {
+variable "vpc_secondary_cidr_blocks" {
   default     = []
   description = "List of secondary CIDR blocks to associate with the VPC to extend the IP Address pool"
 }
@@ -107,7 +95,7 @@ variable "enable_private_nat_gateway" {
   description = "Should be true if you want to provision NAT Gateways for each of your private networks"
 }
 
-variable "single_nat_gateway" {
+variable "single_private_nat_gateway" {
   description = "Should be true if you want to provision a single shared NAT Gateway across all of your private networks"
   default     = false
 }

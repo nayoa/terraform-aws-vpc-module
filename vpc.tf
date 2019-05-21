@@ -2,19 +2,19 @@
 
 resource "aws_vpc" "main" {
   cidr_block                       = "${var.vpc_cidr}"
-  enable_dns_hostnames             = "${var.enable_dns_hostnames}"
-  enable_dns_support               = "${var.enable_dns_support}"
-  assign_generated_ipv6_cidr_block = "${var.assign_generated_ipv6_cidr_block}"
+  enable_dns_hostnames             = "${var.vpc_enable_dns_hostnames}"
+  enable_dns_support               = "${var.vpc_enable_dns_support}"
+  assign_generated_ipv6_cidr_block = "${var.vpc_assign_generated_ipv6_cidr_block}"
 
   tags = "${var.resource_tags}"
 }
 
 resource "aws_vpc_ipv4_cidr_block_association" "secondary_cidr" {
-  count = "${length(var.secondary_cidr_blocks) > 0 ? length(var.secondary_cidr_blocks) : 0}"
+  count = "${length(var.vpc_secondary_cidr_blocks) > 0 ? length(var.vpc_secondary_cidr_blocks) : 0}"
 
   vpc_id = "${aws_vpc.main.id}"
 
-  cidr_block = "${element(var.secondary_cidr_blocks, count.index)}"
+  cidr_block = "${element(var.vpc_secondary_cidr_blocks, count.index)}"
 }
 
 ### Internet Gateway
