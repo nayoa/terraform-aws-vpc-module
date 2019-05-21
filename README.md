@@ -75,10 +75,10 @@ module "example_aws_networking" {
   enable_public_nat_gateway    = true
 
   resource_tags {
-    name          = "dev_networking"
-    created_by    = "Nayo Akinyele"
-    environment   = "dev"
-    management_by = "Product Team"
+    Name          = "dev_networking"
+    CreatedBy    = "Joe Bloggs"
+    Environment   = "dev"
+    ManagementBy = "Product Team"
   }
 }
 
