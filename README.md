@@ -101,8 +101,8 @@ module "example_aws_networking" {
 | vpc_secondary_cidr_blocks | List of secondary CIDR blocks to associate with the VPC to extend the IP Address pool | - | [] | no |
 | public_subnets | A list of public subnets inside the VPC | - | [] | no |
 | private_subnets | A list of private subnets inside the VPC | - | [] | no |
-| one_nat_gateway_per_az | Should be true if you want only one NAT Gateway per availability zone. Requires `var.azs` to be set, and the number of `public_subnets` created to be greater than or equal to the number of availability zones specified in `var.azs | string | false | no |
-| create_database_subnet_group | string | true | no |
+| one_nat_gateway_per_az | Should be true if you want only one NAT Gateway per availability zone. Requires `var.azs` to be set, and the number of `public_subnets` created to be greater than or equal to the number of availability zones specified in `var.azs` | string | false | no |
+| create_database_subnet_group | Controls if database subnet group should be created | string | true | no |
 | database_subnets | A list of database subnets | - | [] | no |
 | create_database_nat_gateway_route | Controls if a nat gateway route should be created to give internet access to the database subnets | string | false | no |
 | azs | A list of availability zones in the region | - | [] | false |
