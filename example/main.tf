@@ -1,12 +1,23 @@
 ######
 # VPC
 ######
+terraform {
+  backend "remote" {
+    hostname     = "app.terraform.io"
+    organization = "evesleep"
+
+    workspaces {
+      name = "dev"
+    }
+  }
+}
+
 provider "aws" {
   region = "eu-west-1"
 }
 
 module "example_aws_networking" {
-  source                       = ".."
+  source                       = "git::ssh://git@gitlab.com/evesleep/infrastructure/terraform-modules/vpc.git?ref=0.2"
   name                         = "example_aws_networking"
   vpc_cidr                     = "10.0.0.0/16"
   public_subnets               = ["10.0.128.0/20", "10.0.144.0/20"]
@@ -16,7 +27,7 @@ module "example_aws_networking" {
   azs                          = ["eu-west-1a", "eu-west-1b"]
   enable_public_nat_gateway    = true
 
-  resource_tags {
+  resource_tags = {
     name          = "dev_networking"
     created_by    = "Nayo Akinyele"
     environment   = "dev"
