@@ -29,7 +29,7 @@ variable "vpc_enable_dns_hostnames" {
 
 variable "vpc_assign_generated_ipv6_cidr_block" {
   type        = "string"
-  default     = "false"
+  default     = "true"
   description = "Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for the VPC. You cannot specify the range of IP addresses, or the size of the CIDR block"
 }
 
@@ -103,4 +103,23 @@ variable "single_private_nat_gateway" {
 variable "map_public_ip_on_launch" {
   default     = false
   description = "Specify true to indicate that instances launched into the subnet should be assigned a public IP address"
+}
+
+variable "bastion_instance_type" {
+  default     = "t2.micro"
+  description = "The type of the instance"
+}
+
+variable "autoscaling_min_size" {
+  default     = "1"
+  description = "The minimum size of the auto scale group"
+}
+
+variable "autoscaling_max_size" {
+  default     = "2"
+  description = "The maximum size of the auto scale group"
+}
+
+variable "key_pair_name" {
+    description = "The name of the key pair to attach to instances"
 }
