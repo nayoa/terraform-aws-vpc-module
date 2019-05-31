@@ -15,7 +15,6 @@ format:
 
 shellcheck:
   stage: shellcheck
-  image: koalaman/shellcheck
+  image: koalaman/shellcheck-alpine
   script:
-    - cd templates/
-    - shellcheck user_data.sh
+    - shellcheck templates/user_data.sh
