@@ -9,10 +9,14 @@ These types of resources are supported:
 * [AWS Internet Gateway](https://www.terraform.io/docs/providers/aws/r/internet_gateway.html)
 * [AWS Route Table](https://www.terraform.io/docs/providers/aws/r/route_table.html)
 * [AWS Route](https://www.terraform.io/docs/providers/aws/r/route.html)
+* [AWS Route Table Association](https://www.terraform.io/docs/providers/aws/r/route_table_association.html)
 * [AWS Subnet](https://www.terraform.io/docs/providers/aws/r/subnet.html)
 * [AWS EIP](https://www.terraform.io/docs/providers/aws/r/eip.html)
 * [AWS NAT Gateway](https://www.terraform.io/docs/providers/aws/r/nat_gateway.html)
 * [AWS DB Subnet Group](https://www.terraform.io/docs/providers/aws/r/db_subnet_group.html)
+* [AWS Lauch Configuration](https://www.terraform.io/docs/providers/aws/r/launch_configuration.html)
+* [AWS Autoscaling Group](https://www.terraform.io/docs/providers/aws/r/autoscaling_group.html)
+* [AWS Security Group](https://www.terraform.io/docs/providers/aws/r/security_group.html)
 
 ## Dependencies
 
@@ -21,7 +25,7 @@ These types of resources are supported:
    What to install to use the module locally
   </summary>
 
-* [Terraform >= v0.11.13](https://learn.hashicorp.com/terraform/getting-started/install.html)
+* [Terraform >= v0.12](https://learn.hashicorp.com/terraform/getting-started/install.html)
 ```bash
 $ brew install terraform
 ```
@@ -73,6 +77,7 @@ module "example_aws_networking" {
   create_database_subnet_group = false
   azs                          = ["eu-west-1a", "eu-west-1b"]
   enable_public_nat_gateway    = true
+  key_pair_name                = "test"
 
   resource_tags {
     Name          = "dev_networking"
@@ -111,6 +116,10 @@ module "example_aws_networking" {
 | enable_private_nat_gateway | Should be true if you want to provision NAT Gateways for each of your private networks | string | false | no |
 | single_private_nat_gateway | Should be true if you want to provision a single shared NAT Gateway across all of your private networks | string | false | no |
 | map_public_ip_on_launch | Specify true to indicate that instances launched into the subnet should be assigned a public IP address | string | false | no |
+| bastion_instance_type | The size of instance to launch | string | t2.micro | no |
+| autoscaling_min_size | The minimum size of the auto scale group | string | 1 | no |
+| autoscaling_max_size | The maximum size of the auto scale group | string | 2 | no |
+| key_pair_name | The name of the key pair to attach to instances | string | - | yes |
 
 ## Outputs
 
