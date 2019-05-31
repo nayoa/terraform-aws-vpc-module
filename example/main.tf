@@ -17,7 +17,7 @@ provider "aws" {
 }
 
 module "example_aws_networking" {
-  source                       = "./.."
+  source                       = "git::ssh://git@gitlab.com/evesleep/infrastructure/terraform-modules/vpc.git?ref=0.2"
   name                         = "example_aws_networking"
   vpc_cidr                     = "10.0.0.0/16"
   public_subnets               = ["10.0.101.0/24", "10.0.102.0/24"]
