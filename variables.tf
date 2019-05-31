@@ -121,5 +121,5 @@ variable "autoscaling_max_size" {
 }
 
 variable "key_pair_name" {
-    description = "The name of the key pair to attach to instances"
+  description = "The name of the key pair to attach to instances"
 }
