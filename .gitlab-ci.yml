@@ -5,16 +5,15 @@ image:
     - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
 
 stages:
-  - format
-  - shellcheck
+  - test
 
-format:
-  stage: format
+terraform_format:
+  stage: test
   script:
     - tf=$(terraform fmt -write=false -diff); if [[ -n "$tf" ]]; then printf "$tf\n\n\nSome terraform files failed syntax validation, run 'terraform fmt' to fix\n\n"; exit 1; fi
 
 shellcheck:
-  stage: shellcheck
+  stage: test
   image: koalaman/shellcheck-alpine
   script:
     - shellcheck templates/user_data.sh

@@ -17,7 +17,7 @@ data "aws_ami" "ubuntu" {
 ### Launch configuration
 
 resource "aws_launch_configuration" "bastion" {
-  name                        = "bastion-${var.name}"
+  name                        = "bastion-${var.name}-${random_string.launch_configuration.result}"
   key_name                    = "${var.key_pair_name}"
   image_id                    = "${data.aws_ami.ubuntu.id}"
   instance_type               = "${var.bastion_instance_type}"
@@ -33,7 +33,7 @@ resource "aws_launch_configuration" "bastion" {
 ### Autoscaling group
 
 resource "aws_autoscaling_group" "bastion" {
-  name                 = "bastion-${var.name}"
+  name                 = "bastion-${var.name}-${random_string.autoscaling_group.result}"
   launch_configuration = "${aws_launch_configuration.bastion.name}"
   min_size             = "${var.autoscaling_min_size}"
   max_size             = "${var.autoscaling_max_size}"
