@@ -1,16 +1,12 @@
 ### AMI
 
-data "aws_ami" "ubuntu" {
+data "aws_ami" "hardened_ami" {
   most_recent = true
-  owners      = ["099720109477"]
+  owners      = ["${local.ami_owner}"]
 
   filter {
     name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
-  }
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
+    values = ["hardened-ami-*"]
   }
 }
 
