@@ -15,7 +15,7 @@ data "aws_ami" "hardened_ami" {
 resource "aws_launch_configuration" "bastion" {
   name                        = "bastion-${var.name}-${random_string.launch_configuration.result}"
   key_name                    = "${var.key_pair_name}"
-  image_id                    = "${data.aws_ami.ubuntu.id}"
+  image_id                    = "${data.aws_ami.hardened_ami.id}"
   instance_type               = "${var.bastion_instance_type}"
   security_groups             = [aws_security_group.bastion.id]
   user_data                   = file("${path.module}/templates/user_data.sh")
