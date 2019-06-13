@@ -6,9 +6,3 @@ locals {
   dev_account_id    = "651854267583"
   prod_account_id   = "586848946515"
 }
-
-resource "null_resource" "environment" {
-  provisioner "local-exec" {
-    command = "export ENVIRONMENT=${local.environment}"
-  }
-}
