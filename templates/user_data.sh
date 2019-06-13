@@ -5,6 +5,6 @@ sudo apt-get update -y
 sudo apt-get upgrade -y
 
 # Add hostname for bastion host
-sudo hostnamectl set-hostname bastion-$ENVIRONMENT
+sudo hostnamectl set-hostname bastion-"$ENVIRONMENT"
 sudo sed 's|localhost|$ENVIRONMENT|g' /etc/hosts
 sudo reboot
