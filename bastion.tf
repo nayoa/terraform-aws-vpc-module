@@ -18,12 +18,13 @@ resource "aws_launch_configuration" "bastion" {
   image_id                    = "${data.aws_ami.hardened_ami.id}"
   instance_type               = "${var.bastion_instance_type}"
   security_groups             = [aws_security_group.bastion.id]
-  user_data                   = templatefile("${path.module}/templates/user_data.tmpl", environment = local.environment)
+  user_data                   = templatefile("${path.module}/templates/user_data.tmpl", { environment = local.environment })
   associate_public_ip_address = true
 
   lifecycle {
     create_before_destroy = true
   }
+}
 
 ### Autoscaling group
 
