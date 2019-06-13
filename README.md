@@ -136,3 +136,7 @@ module "example_aws_networking" {
 ## Run Tests
 
 When a commit is made to the repo - the [Gitlab pipeline](.gitlab-ci.yml) is triggered and does a terraform validate and format on the Hashicorp Configuration Language (HCL).
+
+## Improvements
+
+* Replace [user_data](templates/user_data.sh) script with an Ansible playbook

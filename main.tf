@@ -6,3 +6,7 @@ locals {
   dev_account_id    = "651854267583"
   prod_account_id   = "586848946515"
 }
+
+provisioner "local-exec" {
+  command = "export ENVIRONMENT=${local.environment}"
+}
