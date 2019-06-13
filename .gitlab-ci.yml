@@ -16,4 +16,4 @@ shellcheck:
   stage: test
   image: koalaman/shellcheck-alpine
   script:
-    - shellcheck templates/user_data.sh
+    - shellcheck templates/user_data.tmpl
