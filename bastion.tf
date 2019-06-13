@@ -24,6 +24,12 @@ resource "aws_launch_configuration" "bastion" {
   lifecycle {
     create_before_destroy = true
   }
+
+  provisioner "remote-exec" {
+    inline = [
+      "export ENVIRONMENT=${local.environment}"
+    ]
+  }
 }
 
 ### Autoscaling group
