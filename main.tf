@@ -7,6 +7,8 @@ locals {
   prod_account_id   = "586848946515"
 }
 
-provisioner "local-exec" {
-  command = "export ENVIRONMENT=${local.environment}"
+resource "null_resource" "environment" {
+  provisioner "local-exec" {
+    command = "export ENVIRONMENT=${local.environment}"
+  }
 }
