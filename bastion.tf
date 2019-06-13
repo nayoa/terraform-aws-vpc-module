@@ -13,7 +13,7 @@ data "aws_ami" "hardened_ami" {
 ### Launch configuration
 
 resource "aws_launch_configuration" "bastion" {
-  name                        = "bastion-${var.name}-${random_string.launch_configuration.result}"
+  name_prefix                 = "bastion-${var.name}-"
   key_name                    = "${var.key_pair_name}"
   image_id                    = "${data.aws_ami.hardened_ami.id}"
   instance_type               = "${var.bastion_instance_type}"
@@ -29,7 +29,7 @@ resource "aws_launch_configuration" "bastion" {
 ### Autoscaling group
 
 resource "aws_autoscaling_group" "bastion" {
-  name                 = "bastion-${var.name}-${random_string.autoscaling_group.result}"
+  name_prefix          = "bastion-${var.name}-"
   launch_configuration = "${aws_launch_configuration.bastion.name}"
   min_size             = "${var.autoscaling_min_size}"
   max_size             = "${var.autoscaling_max_size}"

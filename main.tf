@@ -6,13 +6,3 @@ locals {
   dev_account_id    = "651854267583"
   prod_account_id   = "586848946515"
 }
-
-resource "random_string" "launch_configuration" {
-  length  = 5
-  special = false
-}
-
-resource "random_string" "autoscaling_group" {
-  length  = 5
-  special = false
-}
