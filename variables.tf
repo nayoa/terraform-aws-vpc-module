@@ -126,5 +126,5 @@ variable "key_pair_name" {
 
 variable "autoscaling_desired_capacity" {
   default     = "1"
-  descriotion = "The number of Amazon EC2 instances that should be running in the group"
+  description = "The number of Amazon EC2 instances that should be running in the group"
 }
