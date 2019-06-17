@@ -20,5 +20,5 @@ sudo apt-get install awscli -y
 # Associate instance with Elastic IP
 aws ec2 --region associate-address \
 --region eu-west-1 \
---instance-id $(curl http://169.254.169.254/latest/meta-data/instance-id) \
---allocation-id ${eip} --allow-reassociation
+--instance-id "$(curl http://169.254.169.254/latest/meta-data/instance-id)" \
+--allocation-id "${eip}" --allow-reassociation
