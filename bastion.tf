@@ -13,12 +13,13 @@ data "aws_ami" "hardened_ami" {
 ### Launch configuration
 
 resource "aws_launch_configuration" "bastion" {
+  iam_instance_profile        = "${aws_iam_instance_profile.bastion.name}"
   name_prefix                 = "bastion-${var.name}-"
   key_name                    = "${var.key_pair_name}"
   image_id                    = "${data.aws_ami.hardened_ami.id}"
   instance_type               = "${var.bastion_instance_type}"
   security_groups             = [aws_security_group.bastion.id]
-  user_data                   = templatefile("${path.module}/templates/user_data.tmpl", { environment = local.environment })
+  user_data                   = templatefile("${path.module}/templates/user_data.tmpl", { environment = local.environment, eip = aws_eip.bastion[*].id })
   associate_public_ip_address = true
 
   lifecycle {
@@ -33,6 +34,7 @@ resource "aws_autoscaling_group" "bastion" {
   launch_configuration = "${aws_launch_configuration.bastion.name}"
   min_size             = "${var.autoscaling_min_size}"
   max_size             = "${var.autoscaling_max_size}"
+  desired_capacity     = "${var.autoscaling_desired_capacity}"
   termination_policies = ["OldestInstance"]
   health_check_type    = "EC2"
   vpc_zone_identifier  = aws_subnet.public[*].id
@@ -41,6 +43,23 @@ resource "aws_autoscaling_group" "bastion" {
     create_before_destroy = true
   }
 
+  tags = [
+    concat(
+      [
+        {
+          "key"                 = "interpolation1"
+          "value"               = "value3"
+          "propagate_at_launch" = true
+        },
+        {
+          "key"                 = "interpolation2"
+          "value"               = "value4"
+          "propagate_at_launch" = true
+        },
+      ],
+      var.resource_tags,
+    ),
+  ]
 }
 
 ### Security Group
@@ -65,5 +84,58 @@ resource "aws_security_group" "bastion" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = "${var.resource_tags}"
+  tags = var.resource_tags
+}
+
+### Bastion Elastic IP
+
+resource "aws_eip" "bastion" {
+  count = length(var.autoscaling_desired_capacity)
+  vpc   = true
+
+  tags = var.resource_tags
+}
+
+### Bastion IAM Role
+
+data "aws_iam_policy_document" "bastion_assume" {
+  statement {
+    actions = [
+      "sts:AssumeRole",
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+
+    effect = "Allow"
+  }
+}
+
+resource "aws_iam_role" "bastion" {
+  name               = "bastion-${local.environment}"
+  assume_role_policy = "${data.aws_iam_policy_document.bastion_assume.json}"
+}
+
+data "aws_iam_policy_document" "bastion" {
+  statement {
+    actions = [
+      "ec2:AssociateAddress",
+    ]
+    resources = [
+      "*",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "bastion" {
+  name   = "associate-eip-${local.environment}"
+  role   = "${aws_iam_role.bastion.id}"
+  policy = "${data.aws_iam_policy_document.bastion.json}"
+}
+
+resource "aws_iam_instance_profile" "bastion" {
+  name = "associate-eip-${local.environment}"
+  role = "${aws_iam_role.bastion.name}"
 }

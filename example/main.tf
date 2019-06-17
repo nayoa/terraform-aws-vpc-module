@@ -26,6 +26,7 @@ module "example_aws_networking" {
   create_database_subnet_group = false
   azs                          = ["eu-west-1a", "eu-west-1b"]
   enable_public_nat_gateway    = true
+  enable_private_nat_gateway   = true
   key_pair_name                = "test"
 
 
