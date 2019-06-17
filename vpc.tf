@@ -30,7 +30,9 @@ resource "aws_internet_gateway" "gw" {
 resource "aws_route_table" "public" {
   vpc_id = "${aws_vpc.main.id}"
 
-  tags = var.resource_tags
+  tags = {
+    Name = local.environment
+  }
 }
 
 resource "aws_route" "public_internet_gateway" {
@@ -52,7 +54,9 @@ resource "aws_route_table_association" "public" {
 resource "aws_route_table" "private" {
   vpc_id = "${aws_vpc.main.id}"
 
-  tags = var.resource_tags
+  tags = {
+    Name = local.private_tag
+  }
 }
 
 resource "aws_route_table_association" "private" {
@@ -68,7 +72,9 @@ resource "aws_route_table" "database" {
 
   vpc_id = aws_vpc.main.id
 
-  tags = var.resource_tags
+  tags = {
+    Name = local.database_tag
+  }
 }
 
 resource "aws_route" "database_internet_gateway" {
@@ -98,7 +104,7 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = "${var.map_public_ip_on_launch}"
 
   tags = {
-    Name = local.public_subnet_tag
+    Name = local.public_tag
   }
 }
 
@@ -112,7 +118,7 @@ resource "aws_subnet" "private" {
   availability_zone = element(var.azs, count.index)
 
   tags = {
-    Name = local.private_subnet_tag
+    Name = local.private_tag
   }
 }
 
@@ -126,7 +132,7 @@ resource "aws_subnet" "database" {
   availability_zone = element(var.azs, count.index)
 
   tags = {
-    Name = local.database_subnet_tag
+    Name = local.database_tag
   }
 }
 
