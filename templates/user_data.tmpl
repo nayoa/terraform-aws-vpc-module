@@ -2,6 +2,9 @@
 
 # shellcheck disable=SC2154
 
+set -e
+set -x
+
 # Update the OS to begin with to catch up on the latest packages.
 sudo apt-get update -y
 sudo apt-get upgrade -y
@@ -10,3 +13,12 @@ sudo apt-get upgrade -y
 sudo hostnamectl set-hostname bastion-"${environment}"
 sudo sed 's|localhost|"${environment}"|g' /etc/hosts
 sudo reboot
+
+# Install AWSCLI
+sudo apt-get install awscli -y
+
+# Associate instance with Elastic IP
+aws ec2 --region associate-address \
+--region eu-west-1 \
+--instance-id $(curl http://169.254.169.254/latest/meta-data/instance-id) \
+--allocation-id ${eip} --allow-reassociation

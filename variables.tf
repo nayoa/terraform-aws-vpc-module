@@ -123,3 +123,8 @@ variable "autoscaling_max_size" {
 variable "key_pair_name" {
   description = "The name of the key pair to attach to instances"
 }
+
+variable "autoscaling_desired_capacity" {
+  default     = "1"
+  descriotion = "The number of Amazon EC2 instances that should be running in the group"
+}

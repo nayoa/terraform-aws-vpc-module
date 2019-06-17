@@ -120,6 +120,7 @@ module "example_aws_networking" {
 | autoscaling_min_size | The minimum size of the auto scale group | string | 1 | no |
 | autoscaling_max_size | The maximum size of the auto scale group | string | 2 | no |
 | key_pair_name | The name of the key pair to attach to instances | string | - | yes |
+| autoscaling_desired_size | The number of Amazon EC2 instances that should be running in the group | string | 1 | no |
 
 ## Outputs
 
