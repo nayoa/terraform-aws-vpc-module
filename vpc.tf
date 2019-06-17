@@ -97,8 +97,9 @@ resource "aws_subnet" "public" {
   availability_zone       = element(var.azs, count.index)
   map_public_ip_on_launch = "${var.map_public_ip_on_launch}"
 
-  tags = local.public_subnet_tag
-
+  tags = {
+    Name = local.public_subnet_tag
+  }
 }
 
 ### Private Subnet
@@ -110,7 +111,9 @@ resource "aws_subnet" "private" {
   cidr_block        = "${var.private_subnets[count.index]}"
   availability_zone = element(var.azs, count.index)
 
-  tags = local.private_subnet_tag
+  tags = {
+    Name = local.private_subnet_tag
+  }
 }
 
 ### Database Subnet
@@ -122,7 +125,9 @@ resource "aws_subnet" "database" {
   cidr_block        = "${var.database_subnets[count.index]}"
   availability_zone = element(var.azs, count.index)
 
-  tags = local.database_subnet_tag
+  tags = {
+    Name = local.database_subnet_tag
+  }
 }
 
 resource "aws_db_subnet_group" "database" {
