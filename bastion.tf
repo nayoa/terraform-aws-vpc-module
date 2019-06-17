@@ -78,7 +78,7 @@ resource "aws_security_group" "bastion" {
 ### Bastion Elastic IP
 
 resource "aws_eip" "bastion" {
-  vpc   = true
+  vpc = true
 
   tags = var.resource_tags
 }
