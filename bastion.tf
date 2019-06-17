@@ -43,23 +43,11 @@ resource "aws_autoscaling_group" "bastion" {
     create_before_destroy = true
   }
 
-  tags = [
-    concat(
-      [
-        {
-          "key"                 = "interpolation1"
-          "value"               = "value3"
-          "propagate_at_launch" = true
-        },
-        {
-          "key"                 = "interpolation2"
-          "value"               = "value4"
-          "propagate_at_launch" = true
-        },
-      ],
-      var.resource_tags,
-    ),
-  ]
+  tag {
+    key                 = "Name"
+    value               = "bastion-${local.environment}"
+    propagate_at_launch = true
+  }
 }
 
 ### Security Group
