@@ -52,6 +52,7 @@ resource "aws_route_table_association" "public" {
 ### Private Routing
 
 resource "aws_route_table" "private" {
+  count  = length(var.private_subnets)
   vpc_id = "${aws_vpc.main.id}"
 
   tags = {
@@ -62,7 +63,7 @@ resource "aws_route_table" "private" {
 resource "aws_route_table_association" "private" {
   count          = length(var.private_subnets)
   subnet_id      = element(aws_subnet.private[*].id, count.index)
-  route_table_id = aws_route_table.private.id
+  route_table_id = aws_route_table.private[*].id
 }
 
 ### Database Routes
