@@ -30,7 +30,9 @@ resource "aws_internet_gateway" "gw" {
 resource "aws_route_table" "public" {
   vpc_id = "${aws_vpc.main.id}"
 
-  tags = var.resource_tags
+  tags = {
+    Name = local.public_tag
+  }
 }
 
 resource "aws_route" "public_internet_gateway" {
@@ -50,15 +52,18 @@ resource "aws_route_table_association" "public" {
 ### Private Routing
 
 resource "aws_route_table" "private" {
+  count  = local.max_subnet_length > 0 ? local.nat_gateway_count : 0
   vpc_id = "${aws_vpc.main.id}"
 
-  tags = var.resource_tags
+  tags = {
+    Name = local.private_tag
+  }
 }
 
 resource "aws_route_table_association" "private" {
-  count          = length(var.private_subnets)
-  subnet_id      = element(aws_subnet.private[*].id, count.index)
-  route_table_id = aws_route_table.private.id
+  count          = length(var.private_subnets) > 0 ? length(var.private_subnets) : 0
+  subnet_id      = element(aws_subnet.private.*.id, count.index)
+  route_table_id = element(aws_route_table.private.*.id, var.single_private_nat_gateway ? 0 : count.index)
 }
 
 ### Database Routes
@@ -68,7 +73,9 @@ resource "aws_route_table" "database" {
 
   vpc_id = aws_vpc.main.id
 
-  tags = var.resource_tags
+  tags = {
+    Name = local.database_tag
+  }
 }
 
 resource "aws_route" "database_internet_gateway" {
@@ -98,7 +105,7 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = "${var.map_public_ip_on_launch}"
 
   tags = {
-    Name = public-subnet-local.environment
+    Name = local.public_tag
   }
 }
 
@@ -112,7 +119,7 @@ resource "aws_subnet" "private" {
   availability_zone = element(var.azs, count.index)
 
   tags = {
-    Name = private-subnet-local.environment
+    Name = local.private_tag
   }
 }
 
@@ -126,7 +133,7 @@ resource "aws_subnet" "database" {
   availability_zone = element(var.azs, count.index)
 
   tags = {
-    Name = "Database Subnet"
+    Name = local.database_tag
   }
 }
 
@@ -162,9 +169,9 @@ resource "aws_nat_gateway" "gw" {
 resource "aws_route" "private_nat_gateway" {
   count = var.enable_private_nat_gateway ? local.nat_gateway_count : 0
 
-  route_table_id         = element(aws_route_table.private[*].id, count.index)
+  route_table_id         = element(aws_route_table.private.*.id, count.index)
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = element(aws_nat_gateway.gw[*].id, count.index)
+  nat_gateway_id         = element(aws_nat_gateway.gw.*.id, count.index)
 
   timeouts {
     create = "5m"

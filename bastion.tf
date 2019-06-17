@@ -19,7 +19,7 @@ resource "aws_launch_configuration" "bastion" {
   image_id                    = "${data.aws_ami.hardened_ami.id}"
   instance_type               = "${var.bastion_instance_type}"
   security_groups             = [aws_security_group.bastion.id]
-  user_data                   = templatefile("${path.module}/templates/user_data.tmpl", { environment = local.environment, eip = aws_eip.bastion[*].id })
+  user_data                   = templatefile("${path.module}/templates/user_data.tmpl", { environment = local.environment, eip = aws_eip.bastion.id })
   associate_public_ip_address = true
 
   lifecycle {
@@ -43,23 +43,11 @@ resource "aws_autoscaling_group" "bastion" {
     create_before_destroy = true
   }
 
-  tags = [
-    concat(
-      [
-        {
-          "key"                 = "interpolation1"
-          "value"               = "value3"
-          "propagate_at_launch" = true
-        },
-        {
-          "key"                 = "interpolation2"
-          "value"               = "value4"
-          "propagate_at_launch" = true
-        },
-      ],
-      var.resource_tags,
-    ),
-  ]
+  tag {
+    key                 = "Name"
+    value               = "bastion-${local.environment}"
+    propagate_at_launch = true
+  }
 }
 
 ### Security Group
@@ -90,8 +78,7 @@ resource "aws_security_group" "bastion" {
 ### Bastion Elastic IP
 
 resource "aws_eip" "bastion" {
-  count = length(var.autoscaling_desired_capacity)
-  vpc   = true
+  vpc = true
 
   tags = var.resource_tags
 }
