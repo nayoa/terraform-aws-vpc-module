@@ -79,11 +79,11 @@ module "example_aws_networking" {
   enable_private_nat_gateway   = true
   key_pair_name                = "test"
 
-  resource_tags {
-    Name          = "dev_networking"
-    CreatedBy    = "Joe Bloggs"
-    Environment   = "dev"
-    ManagementBy = "Product Team"
+
+  tags {
+    Application   = "Dev Networking"
+    CreatedBy     = "Terraform"
+    Environment   = "Dev"
   }
 }
 
@@ -98,29 +98,30 @@ module "example_aws_networking" {
 | Name | Description | Type | Default | Required |
 |------|-------------|:----:|:-----:|:-----:|
 | name | Name to be used on all the resources as identifier | string | - | no |
-| resource_tags | A mapping of tags to assign to the networking resources | map | {} | no |
+| tags | A mapping of tags to assign to the networking resources | map | {} | no |
 | vpc_cidr | The CIDR block for the VPC | string | -| yes |
-| vpc_enable_dns_support | A boolean flag to enable/disable DNS support in the VPC | string | true | no |
-| vpc_enable_dns_hostnames | A boolean flag to enable/disable DNS hostnames in the VPC | string | false | no |
-| vpc_assign_generated_ipv6_cidr_block | Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for the VPC. You cannot specify the range of IP addresses, or the size of the CIDR block | string | false | no |
-| vpc_secondary_cidr_blocks | List of secondary CIDR blocks to associate with the VPC to extend the IP Address pool | - | [] | no |
-| public_subnets | A list of public subnets inside the VPC | - | [] | no |
-| private_subnets | A list of private subnets inside the VPC | - | [] | no |
-| one_nat_gateway_per_az | Should be true if you want only one NAT Gateway per availability zone. Requires `var.azs` to be set, and the number of `public_subnets` created to be greater than or equal to the number of availability zones specified in `var.azs` | string | false | no |
-| create_database_subnet_group | Controls if database subnet group should be created | string | true | no |
-| database_subnets | A list of database subnets | - | [] | no |
-| create_database_nat_gateway_route | Controls if a nat gateway route should be created to give internet access to the database subnets | string | false | no |
-| azs | A list of availability zones in the region | - | [] | false |
-| create_database_internet_gateway_route | Controls if an internet gateway route for public database access should be created | string | false | no |
-| enable_public_nat_gateway | Should be true if you want to provision NAT Gateways for each of your public networks | string | false | no |
-| enable_private_nat_gateway | Should be true if you want to provision NAT Gateways for each of your private networks | string | false | no |
-| single_private_nat_gateway | Should be true if you want to provision a single shared NAT Gateway across all of your private networks | string | false | no |
-| map_public_ip_on_launch | Specify true to indicate that instances launched into the subnet should be assigned a public IP address | string | false | no |
+| vpc_enable_dns_support | A boolean flag to enable/disable DNS support in the VPC | bool | true | no |
+| vpc_enable_dns_hostnames | A boolean flag to enable/disable DNS hostnames in the VPC | bool | false | no |
+| vpc_assign_generated_ipv6_cidr_block | Requests an Amazon-provided IPv6 CIDR block with a /56 prefix length for the VPC. You cannot specify the range of IP addresses, or the size of the CIDR block | bool | false | no |
+| vpc_secondary_cidr_blocks | List of secondary CIDR blocks to associate with the VPC to extend the IP Address pool | list(string) | [] | no |
+| public_subnets | A list of public subnets inside the VPC | list(string) | [] | no |
+| private_subnets | A list of private subnets inside the VPC | list(string) | [] | no |
+| one_nat_gateway_per_az | Should be true if you want only one NAT Gateway per availability zone. Requires `var.azs` to be set, and the number of `public_subnets` created to be greater than or equal to the number of availability zones specified in `var.azs` | bool | false | no |
+| create_database_subnet_group | Controls if database subnet group should be created | bool | true | no |
+| database_subnets | A list of database subnets | list(string) | [] | no |
+| create_database_nat_gateway_route | Controls if a nat gateway route should be created to give internet access to the database subnets | bool | false | no |
+| azs | A list of availability zones in the region | list(string) | [] | false |
+| create_database_internet_gateway_route | Controls if an internet gateway route for public database access should be created | bool | false | no |
+| enable_public_nat_gateway | Should be true if you want to provision NAT Gateways for each of your public networks | bool | false | no |
+| enable_private_nat_gateway | Should be true if you want to provision NAT Gateways for each of your private networks | bool | false | no |
+| single_private_nat_gateway | Should be true if you want to provision a single shared NAT Gateway across all of your private networks | bool | false | no |
+| map_public_ip_on_launch | Specify true to indicate that instances launched into the subnet should be assigned a public IP address | boolg | false | no |
 | bastion_instance_type | The size of instance to launch | string | t2.micro | no |
-| autoscaling_min_size | The minimum size of the auto scale group | string | 1 | no |
-| autoscaling_max_size | The maximum size of the auto scale group | string | 2 | no |
+| autoscaling_min_size | The minimum size of the auto scale group | number | 1 | no |
+| autoscaling_max_size | The maximum size of the auto scale group | number | 2 | no |
 | key_pair_name | The name of the key pair to attach to instances | string | - | yes |
-| autoscaling_desired_size | The number of Amazon EC2 instances that should be running in the group | string | 1 | no |
+| autoscaling_desired_size | The number of Amazon EC2 instances that should be running in the group | number | 1 | no |
+| account_id | AWS Account ID to grab Hardened AMI from | number | `651854267583` | no |
 
 ## Outputs
 
