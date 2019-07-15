@@ -1,10 +1,10 @@
 ### VPC
 
 resource "aws_vpc" "main" {
-  cidr_block                       = "${var.vpc_cidr}"
-  enable_dns_hostnames             = "${var.vpc_enable_dns_hostnames}"
-  enable_dns_support               = "${var.vpc_enable_dns_support}"
-  assign_generated_ipv6_cidr_block = "${var.vpc_assign_generated_ipv6_cidr_block}"
+  cidr_block                       = var.vpc_cidr
+  enable_dns_hostnames             = var.vpc_enable_dns_hostnames
+  enable_dns_support               = var.vpc_enable_dns_support
+  assign_generated_ipv6_cidr_block = var.vpc_assign_generated_ipv6_cidr_block
 
   tags = var.tags
 }
@@ -12,7 +12,7 @@ resource "aws_vpc" "main" {
 resource "aws_vpc_ipv4_cidr_block_association" "secondary_cidr" {
   count = length(var.vpc_secondary_cidr_blocks) > 0 ? length(var.vpc_secondary_cidr_blocks) : 0
 
-  vpc_id = "${aws_vpc.main.id}"
+  vpc_id = aws_vpc.main.id
 
   cidr_block = element(var.vpc_secondary_cidr_blocks, count.index)
 }
@@ -20,7 +20,7 @@ resource "aws_vpc_ipv4_cidr_block_association" "secondary_cidr" {
 ### Internet Gateway
 
 resource "aws_internet_gateway" "gw" {
-  vpc_id = "${aws_vpc.main.id}"
+  vpc_id = aws_vpc.main.id
 
   tags = var.tags
 }
@@ -28,9 +28,9 @@ resource "aws_internet_gateway" "gw" {
 ### Public Routing
 
 resource "aws_route_table" "public" {
-  vpc_id = "${aws_vpc.main.id}"
+  vpc_id = aws_vpc.main.id
 
-  tags = merge(var.tags, map("Name", "Public Subnet ${local.environment}"))
+  tags = merge(var.tags, map("Name", "Public Subnet (${local.environment})"))
 }
 
 resource "aws_route" "public_internet_gateway" {
@@ -38,7 +38,7 @@ resource "aws_route" "public_internet_gateway" {
 
   route_table_id         = aws_route_table.public.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = "${aws_internet_gateway.gw.id}"
+  gateway_id             = aws_internet_gateway.gw.id
 }
 
 resource "aws_route_table_association" "public" {
@@ -51,9 +51,9 @@ resource "aws_route_table_association" "public" {
 
 resource "aws_route_table" "private" {
   count  = local.max_subnet_length > 0 ? local.nat_gateway_count : 0
-  vpc_id = "${aws_vpc.main.id}"
+  vpc_id = aws_vpc.main.id
 
-  tags = merge(var.tags, map("Name", "Private ${local.environment}"))
+  tags = merge(var.tags, map("Name", "Private (${local.environment})"))
 }
 
 resource "aws_route_table_association" "private" {
@@ -69,7 +69,7 @@ resource "aws_route_table" "database" {
 
   vpc_id = aws_vpc.main.id
 
-  tags = merge(var.tags, map("Name", "Database ${local.environment}"))
+  tags = merge(var.tags, map("Name", "Database (${local.environment})"))
 }
 
 resource "aws_route" "database_internet_gateway" {
@@ -96,9 +96,9 @@ resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = element(concat(var.public_subnets, list("")), count.index)
   availability_zone       = element(var.azs, count.index)
-  map_public_ip_on_launch = "${var.map_public_ip_on_launch}"
+  map_public_ip_on_launch = var.map_public_ip_on_launch
 
-  tags = merge(var.tags, map("Name", "Public Subnet ${local.environment}"))
+  tags = merge(var.tags, map("Name", "Public Subnet (${local.environment})"))
 }
 
 ### Private Subnet
@@ -110,7 +110,7 @@ resource "aws_subnet" "private" {
   cidr_block        = "${var.private_subnets[count.index]}"
   availability_zone = element(var.azs, count.index)
 
-  tags = merge(var.tags, map("Name", "Private Subnet ${local.environment}"))
+  tags = merge(var.tags, map("Name", "Private Subnet (${local.environment})"))
 }
 
 ### Database Subnet
@@ -119,20 +119,20 @@ resource "aws_subnet" "database" {
   count = length(var.database_subnets) > 0 ? length(var.database_subnets) : 0
 
   vpc_id            = aws_vpc.main.id
-  cidr_block        = "${var.database_subnets[count.index]}"
+  cidr_block        = var.database_subnets[count.index]
   availability_zone = element(var.azs, count.index)
 
-  tags = merge(var.tags, map("Name", "Database Subnet ${local.environment}"))
+  tags = merge(var.tags, map("Name", "Database Subnet (${local.environment})"))
 }
 
 resource "aws_db_subnet_group" "database" {
   count = length(var.database_subnets) > 0 && var.create_database_subnet_group ? 1 : 0
 
-  name        = "${lower(var.name)}"
+  name        = lower(var.name)
   description = "Database subnet group for ${var.name}"
-  subnet_ids  = ["${aws_subnet.database[*].id}"]
+  subnet_ids  = [aws_subnet.database[*].id]
 
-  tags = merge(var.tags, map("Name", "Database Subnet Group ${local.environment}"))
+  tags = merge(var.tags, map("Name", "Database Subnet Group (${local.environment})"))
 }
 
 ### Nat Gateway
