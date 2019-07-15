@@ -30,7 +30,7 @@ resource "aws_internet_gateway" "gw" {
 resource "aws_route_table" "public" {
   vpc_id = "${aws_vpc.main.id}"
 
-  tags = merge(var.tags, map("Name", "Public Subnet ${var.environment}"))
+  tags = merge(var.tags, map("Name", "Public Subnet ${local.environment}"))
 }
 
 resource "aws_route" "public_internet_gateway" {
@@ -53,9 +53,7 @@ resource "aws_route_table" "private" {
   count  = local.max_subnet_length > 0 ? local.nat_gateway_count : 0
   vpc_id = "${aws_vpc.main.id}"
 
-  tags = {
-    Name = local.private_tag
-  }
+  tags = merge(var.tags, map("Name", "Private ${local.environment}"))
 }
 
 resource "aws_route_table_association" "private" {
@@ -71,9 +69,7 @@ resource "aws_route_table" "database" {
 
   vpc_id = aws_vpc.main.id
 
-  tags = {
-    Name = local.database_tag
-  }
+  tags = merge(var.tags, map("Name", "Database ${local.environment}"))
 }
 
 resource "aws_route" "database_internet_gateway" {
@@ -102,9 +98,7 @@ resource "aws_subnet" "public" {
   availability_zone       = element(var.azs, count.index)
   map_public_ip_on_launch = "${var.map_public_ip_on_launch}"
 
-  tags = {
-    Name = local.public_tag
-  }
+  tags = merge(var.tags, map("Name", "Public Subnet ${local.environment}"))
 }
 
 ### Private Subnet
@@ -116,7 +110,7 @@ resource "aws_subnet" "private" {
   cidr_block        = "${var.private_subnets[count.index]}"
   availability_zone = element(var.azs, count.index)
 
-  tags = merge(var.tags, map("Name", "Private Subnet ${var.environment}"))
+  tags = merge(var.tags, map("Name", "Private Subnet ${local.environment}"))
 }
 
 ### Database Subnet
@@ -128,7 +122,7 @@ resource "aws_subnet" "database" {
   cidr_block        = "${var.database_subnets[count.index]}"
   availability_zone = element(var.azs, count.index)
 
-  tags = merge(var.tags, map("Name", "Database Subnet ${var.environment}"))
+  tags = merge(var.tags, map("Name", "Database Subnet ${local.environment}"))
 }
 
 resource "aws_db_subnet_group" "database" {
@@ -138,7 +132,7 @@ resource "aws_db_subnet_group" "database" {
   description = "Database subnet group for ${var.name}"
   subnet_ids  = ["${aws_subnet.database[*].id}"]
 
-  tags = merge(var.tags, map("Name", "Database Subnet Group ${var.environment}"))
+  tags = merge(var.tags, map("Name", "Database Subnet Group ${local.environment}"))
 }
 
 ### Nat Gateway
