@@ -4,9 +4,9 @@ locals {
   ami_owner         = "${local.environment == "production" ? local.prod_account_id : local.dev_account_id}"
   dev_account_id    = "651854267583"
   prod_account_id   = "586848946515"
-  public_tag        = "public-${local.environment}"
-  private_tag       = "private-${local.environment}"
-  database_tag      = "database-${local.environment}"
+  public_tag        = "Public ${local.environment}"
+  private_tag       = "Private ${local.environment}"
+  database_tag      = "Database ${local.environment}"
   max_subnet_length = max(
     length(var.private_subnets),
     length(var.database_subnets),
