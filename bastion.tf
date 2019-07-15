@@ -89,7 +89,7 @@ resource "aws_security_group" "bastion" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = merge(var.tags, map("Name", "magento-bastion-${var.environment}"))
+  tags = merge(var.tags, map("Name", "magento-bastion-${local.environment}"))
 }
 
 ### Bastion Elastic IP
