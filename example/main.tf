@@ -30,10 +30,9 @@ module "example_aws_networking" {
 
 
 
-  resource_tags = {
-    Name          = "dev_networking"
-    created_by    = "Joe Bloggs"
-    environment   = "dev"
-    management_by = "Product Team"
+  tags = {
+    Application = "Dev Networking"
+    CreatedBy   = "Terraform"
+    Environment = "Dev"
   }
 }

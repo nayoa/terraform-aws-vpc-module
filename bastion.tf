@@ -2,7 +2,7 @@
 
 data "aws_ami" "hardened_ami" {
   most_recent = true
-  owners      = [local.ami_owner]
+  owners      = [var.account_id]
 
   filter {
     name   = "name"
@@ -13,11 +13,11 @@ data "aws_ami" "hardened_ami" {
 ### Launch configuration
 
 resource "aws_launch_configuration" "bastion" {
-  iam_instance_profile        = "${aws_iam_instance_profile.bastion.name}"
-  name_prefix                 = "bastion-${var.name}-"
-  key_name                    = "${var.key_pair_name}"
-  image_id                    = "${data.aws_ami.hardened_ami.id}"
-  instance_type               = "${var.bastion_instance_type}"
+  iam_instance_profile        = aws_iam_instance_profile.bastion.name
+  name_prefix                 = "Bastion ${var.name}"
+  key_name                    = var.key_pair_name
+  image_id                    = data.aws_ami.hardened_ami.id
+  instance_type               = var.bastion_instance_type
   security_groups             = [aws_security_group.bastion.id]
   user_data                   = templatefile("${path.module}/templates/user_data.tmpl", { environment = local.environment, eip = aws_eip.bastion.id })
   associate_public_ip_address = true
@@ -31,10 +31,10 @@ resource "aws_launch_configuration" "bastion" {
 
 resource "aws_autoscaling_group" "bastion" {
   name_prefix          = "bastion-${var.name}-"
-  launch_configuration = "${aws_launch_configuration.bastion.name}"
-  min_size             = "${var.autoscaling_min_size}"
-  max_size             = "${var.autoscaling_max_size}"
-  desired_capacity     = "${var.autoscaling_desired_capacity}"
+  launch_configuration = aws_launch_configuration.bastion.name
+  min_size             = var.autoscaling_min_size
+  max_size             = var.autoscaling_max_size
+  desired_capacity     = var.autoscaling_desired_capacity
   termination_policies = ["OldestInstance"]
   health_check_type    = "EC2"
   vpc_zone_identifier  = aws_subnet.public[*].id
@@ -48,13 +48,30 @@ resource "aws_autoscaling_group" "bastion" {
     value               = "bastion-${local.environment}"
     propagate_at_launch = true
   }
+
+  tag {
+    key                 = "Application"
+    value               = lookup(var.tags, "Application")
+    propagate_at_launch = true
+  }
+
+  tag {
+    key   = "CreatedBy"
+    value = lookup(var.tags, "CreatedBy")
+  }
+
+  tag {
+    key                 = "Environment"
+    value               = lookup(var.tags, "Environment")
+    propagate_at_launch = true
+  }
 }
 
 ### Security Group
 
 resource "aws_security_group" "bastion" {
   name        = "bastion-${var.name}"
-  vpc_id      = "${aws_vpc.main.id}"
+  vpc_id      = aws_vpc.main.id
   description = "${var.name} - Bastion Security Group"
 
   ingress {
@@ -72,7 +89,7 @@ resource "aws_security_group" "bastion" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = var.resource_tags
+  tags = merge(var.tags, map("Name", "magento-bastion-${var.environment}"))
 }
 
 ### Bastion Elastic IP
@@ -80,7 +97,7 @@ resource "aws_security_group" "bastion" {
 resource "aws_eip" "bastion" {
   vpc = true
 
-  tags = var.resource_tags
+  tags = var.tags
 }
 
 ### Bastion IAM Role
@@ -102,7 +119,7 @@ data "aws_iam_policy_document" "bastion_assume" {
 
 resource "aws_iam_role" "bastion" {
   name               = "bastion-${local.environment}"
-  assume_role_policy = "${data.aws_iam_policy_document.bastion_assume.json}"
+  assume_role_policy = data.aws_iam_policy_document.bastion_assume.json
 }
 
 data "aws_iam_policy_document" "bastion" {
@@ -118,11 +135,11 @@ data "aws_iam_policy_document" "bastion" {
 
 resource "aws_iam_role_policy" "bastion" {
   name   = "associate-eip-${local.environment}"
-  role   = "${aws_iam_role.bastion.id}"
-  policy = "${data.aws_iam_policy_document.bastion.json}"
+  role   = aws_iam_role.bastion.id
+  policy = data.aws_iam_policy_document.bastion.json
 }
 
 resource "aws_iam_instance_profile" "bastion" {
   name = "associate-eip-${local.environment}"
-  role = "${aws_iam_role.bastion.name}"
+  role = aws_iam_role.bastion.name
 }

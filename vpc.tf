@@ -6,7 +6,7 @@ resource "aws_vpc" "main" {
   enable_dns_support               = "${var.vpc_enable_dns_support}"
   assign_generated_ipv6_cidr_block = "${var.vpc_assign_generated_ipv6_cidr_block}"
 
-  tags = var.resource_tags
+  tags = var.tags
 }
 
 resource "aws_vpc_ipv4_cidr_block_association" "secondary_cidr" {
@@ -22,7 +22,7 @@ resource "aws_vpc_ipv4_cidr_block_association" "secondary_cidr" {
 resource "aws_internet_gateway" "gw" {
   vpc_id = "${aws_vpc.main.id}"
 
-  tags = var.resource_tags
+  tags = var.tags
 }
 
 ### Public Routing
@@ -30,9 +30,7 @@ resource "aws_internet_gateway" "gw" {
 resource "aws_route_table" "public" {
   vpc_id = "${aws_vpc.main.id}"
 
-  tags = {
-    Name = local.public_tag
-  }
+  tags = merge(var.tags, map("Name", "Public Subnet ${var.environment}"))
 }
 
 resource "aws_route" "public_internet_gateway" {
@@ -118,9 +116,7 @@ resource "aws_subnet" "private" {
   cidr_block        = "${var.private_subnets[count.index]}"
   availability_zone = element(var.azs, count.index)
 
-  tags = {
-    Name = local.private_tag
-  }
+  tags = merge(var.tags, map("Name", "Private Subnet ${var.environment}"))
 }
 
 ### Database Subnet
@@ -132,9 +128,7 @@ resource "aws_subnet" "database" {
   cidr_block        = "${var.database_subnets[count.index]}"
   availability_zone = element(var.azs, count.index)
 
-  tags = {
-    Name = local.database_tag
-  }
+  tags = merge(var.tags, map("Name", "Database Subnet ${var.environment}"))
 }
 
 resource "aws_db_subnet_group" "database" {
@@ -144,7 +138,7 @@ resource "aws_db_subnet_group" "database" {
   description = "Database subnet group for ${var.name}"
   subnet_ids  = ["${aws_subnet.database[*].id}"]
 
-  tags = var.resource_tags
+  tags = merge(var.tags, map("Name", "Database Subnet Group ${var.environment}"))
 }
 
 ### Nat Gateway
@@ -153,7 +147,7 @@ resource "aws_eip" "nat" {
   count = var.enable_public_nat_gateway ? local.nat_gateway_count : 0
   vpc   = true
 
-  tags = var.resource_tags
+  tags = var.tags
 }
 
 resource "aws_nat_gateway" "gw" {
@@ -161,7 +155,7 @@ resource "aws_nat_gateway" "gw" {
   allocation_id = element(aws_eip.nat[*].id, count.index)
   subnet_id     = element(aws_subnet.public[*].id, count.index)
 
-  tags = var.resource_tags
+  tags = var.tags
 
   depends_on = ["aws_internet_gateway.gw"]
 }
