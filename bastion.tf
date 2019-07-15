@@ -14,7 +14,7 @@ data "aws_ami" "hardened_ami" {
 
 resource "aws_launch_configuration" "bastion" {
   iam_instance_profile        = aws_iam_instance_profile.bastion.name
-  name_prefix                 = "Bastion ${var.name}"
+  name_prefix                 = "bastion-${var.name}"
   key_name                    = var.key_pair_name
   image_id                    = data.aws_ami.hardened_ami.id
   instance_type               = var.bastion_instance_type
