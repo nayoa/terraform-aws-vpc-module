@@ -56,8 +56,9 @@ resource "aws_autoscaling_group" "bastion" {
   }
 
   tag {
-    key   = "CreatedBy"
-    value = lookup(var.tags, "CreatedBy")
+    key                 = "CreatedBy"
+    value               = lookup(var.tags, "CreatedBy")
+    propagate_at_launch = true
   }
 
   tag {
