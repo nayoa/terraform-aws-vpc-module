@@ -14,7 +14,7 @@ data "aws_ami" "hardened_ami" {
 
 resource "aws_launch_configuration" "bastion" {
   iam_instance_profile        = aws_iam_instance_profile.bastion.name
-  name_prefix                 = "bastion-${var.name}"
+  name_prefix                 = "bastion-${var.name}-"
   key_name                    = var.key_pair_name
   image_id                    = data.aws_ami.hardened_ami.id
   instance_type               = var.bastion_instance_type
@@ -90,7 +90,7 @@ resource "aws_security_group" "bastion" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = merge(var.tags, map("Name", "magento-bastion-${local.environment}"))
+  tags = merge(var.tags, map("Name", "bastion-${local.environment}"))
 }
 
 ### Bastion Elastic IP
