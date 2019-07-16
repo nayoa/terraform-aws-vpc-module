@@ -121,7 +121,7 @@ module "example_aws_networking" {
 | autoscaling_max_size | The maximum size of the auto scale group | number | 2 | no |
 | key_pair_name | The name of the key pair to attach to instances | string | - | yes |
 | autoscaling_desired_size | The number of Amazon EC2 instances that should be running in the group | number | 1 | no |
-| account_id | AWS Account ID to grab Hardened AMI from | number | `651854267583` | no |
+| account_id | AWS Account ID to grab Hardened AMI from | string | "651854267583" | no |
 
 ## Outputs
 
