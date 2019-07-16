@@ -145,7 +145,7 @@ variable "autoscaling_desired_capacity" {
 }
 
 variable "account_id" {
-  type        = number
-  default     = 651854267583
+  type        = string
+  default     = "651854267583"
   description = "AWS Account ID to grab Hardened AMI from"
 }
