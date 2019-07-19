@@ -6,7 +6,7 @@ resource "aws_vpc" "main" {
   enable_dns_support               = var.vpc_enable_dns_support
   assign_generated_ipv6_cidr_block = var.vpc_assign_generated_ipv6_cidr_block
 
-  tags = var.tags
+  tags = merge(var.tags, map("Name", local.environment))
 }
 
 resource "aws_vpc_ipv4_cidr_block_association" "secondary_cidr" {
@@ -22,7 +22,7 @@ resource "aws_vpc_ipv4_cidr_block_association" "secondary_cidr" {
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
 
-  tags = var.tags
+  tags = merge(var.tags, map("Name", local.environment))
 }
 
 ### Public Routing
@@ -141,7 +141,7 @@ resource "aws_eip" "nat" {
   count = var.enable_public_nat_gateway ? local.nat_gateway_count : 0
   vpc   = true
 
-  tags = var.tags
+  tags = merge(var.tags, map("Name", local.environment))
 }
 
 resource "aws_nat_gateway" "gw" {
@@ -149,7 +149,7 @@ resource "aws_nat_gateway" "gw" {
   allocation_id = element(aws_eip.nat[*].id, count.index)
   subnet_id     = element(aws_subnet.public[*].id, count.index)
 
-  tags = var.tags
+  tags = merge(var.tags, map("Name", local.environment))
 
   depends_on = ["aws_internet_gateway.gw"]
 }
