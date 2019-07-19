@@ -29,3 +29,7 @@ output "eip_public_ip" {
 output "bastion_sg_id" {
   value = aws_security_group.bastion.id
 }
+
+output "azs" {
+  value = var.azs
+}

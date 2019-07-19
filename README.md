@@ -134,6 +134,8 @@ module "example_aws_networking" {
 | private_subnet_id | The ID(s) of the private subnet(s) |
 | nat_gateway_gateway_id | The ID(s) of the NAT Gateway(s) |
 | eip_public_ip | Contains the public IP address |
+| bastion_sg_id | The ID of the bastion security group |
+| azs | The AZ's chosen to provision the infrastructure |
 
 ## Run Tests
 
