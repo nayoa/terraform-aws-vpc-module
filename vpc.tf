@@ -62,24 +62,6 @@ resource "aws_route_table_association" "private" {
   route_table_id = element(aws_route_table.private.*.id, var.single_private_nat_gateway ? 0 : count.index)
 }
 
-### Database Routes
-
-resource "aws_route_table" "database" {
-  count = var.create_database_subnet_route_table && length(var.database_subnets) > 0 ? 1 : 0
-
-  vpc_id = aws_vpc.main.id
-
-  tags = merge(var.tags, map("Name", "Database (${local.environment})"))
-}
-
-resource "aws_route" "database_internet_gateway" {
-  count = var.create_database_subnet_route_table && length(var.database_subnets) > 0 && var.create_database_internet_gateway_route && ! var.create_database_nat_gateway_route ? 1 : 0
-
-  route_table_id         = aws_route_table.database[count.index]
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.gw.id
-}
-
 resource "aws_route" "database_nat_gateway" {
   count = var.create_database_subnet_route_table && length(var.database_subnets) > 0 && ! var.create_database_internet_gateway_route && var.create_database_nat_gateway_route && var.enable_private_nat_gateway ? local.nat_gateway_count : 0
 
@@ -113,26 +95,26 @@ resource "aws_subnet" "private" {
   tags = merge(var.tags, map("Name", "Private Subnet (${local.environment})"))
 }
 
-### Database Subnet
-
-resource "aws_subnet" "database" {
-  count = length(var.database_subnets) > 0 ? length(var.database_subnets) : 0
-
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = var.database_subnets[count.index]
-  availability_zone = element(var.azs, count.index)
-
-  tags = merge(var.tags, map("Name", "Database Subnet (${local.environment})"))
-}
+### Database Subnet Group
 
 resource "aws_db_subnet_group" "database" {
-  count = length(var.database_subnets) > 0 && var.create_database_subnet_group ? 1 : 0
+  count = var.create_database_subnet_group ? 1 : 0
 
   name        = lower(var.name)
-  description = "Database subnet group for ${var.name}"
-  subnet_ids  = [aws_subnet.database[*].id]
+  description = "Database subnet group for ${local.environment}"
+  subnet_ids  = [aws_subnet.private_subnets[*].id]
 
   tags = merge(var.tags, map("Name", "Database Subnet Group (${local.environment})"))
+}
+
+### ElastiCache Subnet Group
+
+resource "aws_elasticache_subnet_group" "elasticache" {
+  count = var.create_elasticache_subnet_group ? 1 : 0
+
+  name        = lower(var.name)
+  description = "ElastiCache subnet group for ${local.environment}"
+  subnet_ids  = aws_subnet.private_subnets.*.id
 }
 
 ### Nat Gateway

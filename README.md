@@ -108,10 +108,8 @@ module "example_aws_networking" {
 | private_subnets | A list of private subnets inside the VPC | list(string) | [] | no |
 | one_nat_gateway_per_az | Should be true if you want only one NAT Gateway per availability zone. Requires `var.azs` to be set, and the number of `public_subnets` created to be greater than or equal to the number of availability zones specified in `var.azs` | bool | false | no |
 | create_database_subnet_group | Controls if database subnet group should be created | bool | true | no |
-| database_subnets | A list of database subnets | list(string) | [] | no |
-| create_database_nat_gateway_route | Controls if a nat gateway route should be created to give internet access to the database subnets | bool | false | no |
+| create_elastiache_subnet_group | Controls if the elasticache subnet group should be created | bool | true | no |
 | azs | A list of availability zones in the region | list(string) | [] | false |
-| create_database_internet_gateway_route | Controls if an internet gateway route for public database access should be created | bool | false | no |
 | enable_public_nat_gateway | Should be true if you want to provision NAT Gateways for each of your public networks | bool | false | no |
 | enable_private_nat_gateway | Should be true if you want to provision NAT Gateways for each of your private networks | bool | false | no |
 | single_private_nat_gateway | Should be true if you want to provision a single shared NAT Gateway across all of your private networks | bool | false | no |
@@ -135,7 +133,6 @@ module "example_aws_networking" {
 | nat_gateway_gateway_id | The ID(s) of the NAT Gateway(s) |
 | eip_public_ip | Contains the public IP address |
 | bastion_sg_id | The ID of the bastion security group |
-| azs | The AZ's chosen to provision the infrastructure |
 
 ## Run Tests
 
