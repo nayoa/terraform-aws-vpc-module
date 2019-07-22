@@ -63,22 +63,10 @@ variable "create_database_subnet_group" {
   description = "Controls if database subnet group should be created"
 }
 
-variable "database_subnets" {
-  type        = list(string)
-  default     = []
-  description = "A list of database subnets"
-}
-
-variable "create_database_subnet_route_table" {
+variable "create_elasticache_subnet_group" {
   type        = bool
-  default     = false
-  description = "Controls if separate route table for database should be created"
-}
-
-variable "create_database_nat_gateway_route" {
-  type        = bool
-  default     = false
-  description = "Controls if a nat gateway route should be created to give internet access to the database subnets"
+  default     = true
+  description = "Controls if elasticache subnet group should be created"
 }
 
 variable "azs" {
@@ -87,11 +75,6 @@ variable "azs" {
   description = "A list of availability zones in the region"
 }
 
-variable "create_database_internet_gateway_route" {
-  type        = bool
-  default     = false
-  description = "Controls if an internet gateway route for public database access should be created"
-}
 
 variable "enable_public_nat_gateway" {
   type        = bool

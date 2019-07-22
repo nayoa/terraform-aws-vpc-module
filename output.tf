@@ -30,6 +30,10 @@ output "bastion_sg_id" {
   value = aws_security_group.bastion.id
 }
 
-output "azs" {
-  value = var.azs
+output "elasticache_subnet_group" {
+  value = aws_elasticache_subnet_group.elasticache.name
+}
+
+output "database_subnet_group" {
+  value = aws_db_subnet_group.database.id
 }

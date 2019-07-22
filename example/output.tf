@@ -25,3 +25,12 @@ output "nat_gateway_id" {
 output "eip_public_ip" {
   value = module.example_aws_networking.eip_public_ip
 }
+
+output "elasticache_subnet_group" {
+  value = module.example_aws_networking.elastiacache_subnet_group
+}
+
+output "database_subnet_group" {
+  value = module.example_aws_networking.database_subnet_group
+}
+
