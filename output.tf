@@ -31,9 +31,9 @@ output "bastion_sg_id" {
 }
 
 output "elasticache_subnet_group" {
-  value = aws_elasticache_subnet_group.elasticache[count.index].name
+  value = aws_elasticache_subnet_group.elasticache[*].name
 }
 
 output "database_subnet_group" {
-  value = aws_db_subnet_group.database[count.index].id
+  value = aws_db_subnet_group.database[*].id
 }
