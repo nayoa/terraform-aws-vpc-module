@@ -75,7 +75,6 @@ variable "azs" {
   description = "A list of availability zones in the region"
 }
 
-
 variable "enable_public_nat_gateway" {
   type        = bool
   default     = false
