@@ -87,7 +87,6 @@ module "example_aws_networking" {
     Environment   = "Dev"
   }
 }
-
 ```
 
 ## Examples

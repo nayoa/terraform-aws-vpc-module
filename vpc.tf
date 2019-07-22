@@ -63,7 +63,7 @@ resource "aws_route_table_association" "private" {
 }
 
 resource "aws_route" "database_nat_gateway" {
-  count = var.create_database_subnet_route_table && length(var.database_subnets) > 0 && ! var.create_database_internet_gateway_route && var.create_database_nat_gateway_route && var.enable_private_nat_gateway ? local.nat_gateway_count : 0
+  count = var.create_database_subnet_route_table && ! var.create_database_internet_gateway_route && var.create_database_nat_gateway_route && var.enable_private_nat_gateway ? local.nat_gateway_count : 0
 
   route_table_id         = element(aws_route_table.private[*].id, count.index)
   destination_cidr_block = "0.0.0.0/0"
@@ -102,7 +102,7 @@ resource "aws_db_subnet_group" "database" {
 
   name        = lower(var.name)
   description = "Database subnet group for ${local.environment}"
-  subnet_ids  = [aws_subnet.private_subnets[*].id]
+  subnet_ids  = [aws_subnet.private[*].id]
 
   tags = merge(var.tags, map("Name", "Database Subnet Group (${local.environment})"))
 }
@@ -114,7 +114,7 @@ resource "aws_elasticache_subnet_group" "elasticache" {
 
   name        = lower(var.name)
   description = "ElastiCache subnet group for ${local.environment}"
-  subnet_ids  = aws_subnet.private_subnets.*.id
+  subnet_ids  = aws_subnet.private.*.id
 }
 
 ### Nat Gateway
