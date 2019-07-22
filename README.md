@@ -133,6 +133,8 @@ module "example_aws_networking" {
 | nat_gateway_gateway_id | The ID(s) of the NAT Gateway(s) |
 | eip_public_ip | Contains the public IP address |
 | bastion_sg_id | The ID of the bastion security group |
+| elasticache_subnet_group | The name of the elasticache subnet group |
+| database_subnet_group | The name of the database subnet group |
 
 ## Run Tests
 
