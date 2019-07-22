@@ -96,7 +96,7 @@ resource "aws_db_subnet_group" "database" {
   description = "Database subnet group for ${local.environment}"
   subnet_ids  = aws_subnet.private.*.id
 
-  tags = merge(var.tags, map("Name", "Database Subnet Group (${local.environment})"))
+  tags = merge(var.tags, map("Name", "Database Subnet Group ${local.environment}"))
 }
 
 ### ElastiCache Subnet Group
