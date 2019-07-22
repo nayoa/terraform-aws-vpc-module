@@ -17,6 +17,7 @@ These types of resources are supported:
 * [AWS Lauch Configuration](https://www.terraform.io/docs/providers/aws/r/launch_configuration.html)
 * [AWS Autoscaling Group](https://www.terraform.io/docs/providers/aws/r/autoscaling_group.html)
 * [AWS Security Group](https://www.terraform.io/docs/providers/aws/r/security_group.html)
+* [AWS ElastiCache Subnet Group](https://www.terraform.io/docs/providers/aws/r/elasticache_subnet_group.html)
 
 ## Dependencies
 
