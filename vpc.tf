@@ -62,14 +62,6 @@ resource "aws_route_table_association" "private" {
   route_table_id = element(aws_route_table.private.*.id, var.single_private_nat_gateway ? 0 : count.index)
 }
 
-resource "aws_route" "database_nat_gateway" {
-  count = var.create_database_subnet_route_table && ! var.create_database_internet_gateway_route && var.create_database_nat_gateway_route && var.enable_private_nat_gateway ? local.nat_gateway_count : 0
-
-  route_table_id         = element(aws_route_table.private[*].id, count.index)
-  destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = element(aws_nat_gateway.gw[*].id, count.index)
-}
-
 ### Public Subnet
 
 resource "aws_subnet" "public" {
