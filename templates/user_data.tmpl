@@ -22,8 +22,8 @@ aws ec2 --region eu-west-1 associate-address \
 --allocation-id "${eip}" --allow-reassociation
 sudo apt-get update -y
 
-# Install MySQL Client Core 5.7
-sudo apt install mysql-server
+# Install MySQL Server and Client
+sudo apt install mysql-server mysql-client -y
 
 # Restart host
 sudo reboot
