@@ -135,6 +135,7 @@ module "example_aws_networking" {
 | bastion_sg_id | The ID of the bastion security group |
 | elasticache_subnet_group | The name of the elasticache subnet group |
 | database_subnet_group | The name of the database subnet group |
+| bastion_ip | The EIP address attached to the Bastion Host |
 
 ## Run Tests
 
