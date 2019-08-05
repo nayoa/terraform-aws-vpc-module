@@ -79,7 +79,7 @@ resource "aws_security_group" "bastion" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["79.173.165.219/32"]
+    cidr_blocks = ["217.138.170.18/32"]
     description = "Office IP"
   }
 
