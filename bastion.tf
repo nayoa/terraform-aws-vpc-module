@@ -10,6 +10,17 @@ data "aws_ami" "hardened_ami" {
   }
 }
 
+### Get IAM Managed policy for SSM
+
+data "aws_iam_policy" "ssm" {
+  arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_role_policy_attachment" "ssm" {
+  role       = aws_iam_role.bastion.name
+  policy_arn = data.aws_iam_policy.ssm.arn
+}
+
 ### Launch configuration
 
 resource "aws_launch_configuration" "bastion" {
