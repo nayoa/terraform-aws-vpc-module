@@ -131,3 +131,27 @@ variable "account_id" {
   default     = "651854267583"
   description = "AWS Account ID to grab Hardened AMI from"
 }
+
+variable "base64_webmaster_private_key" {
+  type        = string
+  description = "The webmaster private key in base64 format"
+}
+
+variable "ansible_files" {
+  type = list(string)
+  default = [
+    "ansible/playbook.yaml",
+    "ansible/requirements.yaml",
+    "ansible/common/tasks/main.yaml",
+    "ansible/mysql/tasks/main.yaml",
+    "ansible/papertrail/tasks/main.yaml",
+    "ansible/papertrail/templates/log_files.yml.j2",
+    "ansible/papertrail/files/remote_syslog.init.d"
+  ]
+}
+
+variable "ansible_s3_bucket" {
+  type        = string
+  default     = "infrastructure-ansible-20190801093902877800000001"
+  description = "Name of the S3 bucket that will store ansible playbooks"
+}

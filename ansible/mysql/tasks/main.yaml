@@ -1,0 +1,13 @@
+- name: Install MySQL Server and Client
+  apt:
+    name: "{{ packages }}"
+  vars:
+    packages:
+    - mysql-server=5.7.27-0ubuntu0.18.04.1
+    - mysql-client=5.7.27-0ubuntu0.18.04.1
+  become: true
+
+- name: Ensure the MySQL service is running
+  service:
+    name: mysql
+    state: started
