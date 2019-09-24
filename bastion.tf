@@ -30,7 +30,7 @@ resource "aws_launch_configuration" "bastion" {
   image_id                    = data.aws_ami.hardened_ami.id
   instance_type               = var.bastion_instance_type
   security_groups             = [aws_security_group.bastion.id]
-  user_data                   = templatefile("${path.module}/templates/user_data.tmpl", { environment = local.environment, eip = aws_eip.bastion.id, ansible_bucket = var.ansible_s3_bucket, private_key = var.base64_webmaster_private_key, ansible_prefix = local.ansible_prefix, bastion_ip = aws_eip.bastion.public_ip })
+  user_data                   = templatefile("${path.module}/templates/user_data.tmpl", { environment = local.environment, ansible_bucket = var.ansible_s3_bucket, private_key = var.base64_webmaster_private_key, ansible_prefix = local.ansible_prefix, bastion_ip = aws_eip.bastion.public_ip })
   associate_public_ip_address = true
 
   lifecycle {
