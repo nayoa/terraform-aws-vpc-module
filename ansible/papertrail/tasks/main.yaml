@@ -1,0 +1,58 @@
+---
+- name: Setup rsyslog
+  lineinfile:
+    path: /etc/rsyslog.conf
+    line: "*.*    @logs5.papertrailapp.com:41638"
+    insertafter: EOF
+
+- name: Restart rsyslog
+  service:
+    name: rsyslog
+    state: restarted
+
+- name: Install remote_syslog2 v0.20
+  get_url:
+    url: https://github.com/papertrail/remote_syslog2/releases/download/v0.20/remote_syslog_linux_amd64.tar.gz
+    dest: /tmp/remote_syslog_darwin_amd64.tar.gz
+
+- name: Extract remote_syslog_linux_amd64.tar.gz into current directory
+  unarchive:
+    src: /tmp/remote_syslog_darwin_amd64.tar.gz
+    dest: /tmp
+
+- name: Move remote_syslog to /usr/local/bin
+  copy:
+    src: /tmp/remote_syslog/remote_syslog
+    dest: /usr/local/bin/remote_syslog
+    remote_src: yes
+    mode: 0755
+
+- name: Copy log_files.yml.j2 to /etc/log_files.yml
+  template:
+    src: log_files.yml.j2
+    dest: /etc/log_files.yml
+
+- name: Start the remote_syslog daemon
+  shell: remote_syslog
+
+- name: Execute remote_syslog2
+  shell: remote_syslog -p 41638 -d logs5.papertrailapp.com --pid-file=/var/run/remote_syslog.pid
+  args:
+    warn: no
+
+- name: Ensure remote_syslog2 restarts on boot
+  copy:
+    src: remote_syslog.init.d
+    dest: /etc/init.d/remote_syslog
+    mode: '0775'
+
+- name: Create a symbolic link between /etc/init.d/remote_syslog /etc/rc2.d/S30remote_syslog
+  file:
+    src: /etc/init.d/remote_syslog
+    dest: /etc/rc2.d/S30remote_syslog
+    state: link
+
+- name: Unconditionally reboot the machine with all defaults
+  shell: reboot
+  become: yes
+  args:

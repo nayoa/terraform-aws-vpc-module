@@ -1,0 +1,25 @@
+---
+- name: Update and upgrade apt packages
+  apt:
+    update_cache: yes
+    upgrade: "yes"
+
+- name: Set the hostname
+  hostname:
+    name: "bastion-{{ environment }}"
+
+- name: Find EC2 Instance ID
+  uri:
+    url: http://169.254.169.254/latest/meta-data/instance-id
+    return_content: yes
+  register: instance_id
+
+- name: Associate instance with Elastic IP
+  ec2_eip:
+    device_id: "{{ instance_id.content }}"
+    ip: "{{ bastion_ip }}"
+    allow_reassociation: yes
+
+- name: Install package "awscli"
+  apt:
+    name: "awscli=1.14.44-1ubuntu1"

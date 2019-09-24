@@ -2,28 +2,21 @@
 
 # shellcheck disable=SC2154
 
-set -e
-set -x
+# Copy Ansible files from S3 bucket
+aws s3 cp s3://"${ansible_bucket}"/"${ansible_prefix}" . --recursive
 
-# Update the OS to begin with to catch up on the latest packages.
-sudo apt-get update -y
-sudo apt-get upgrade -y
+# Install ansible users role
+export ANSIBLE_ROLES_PATH=/etc/ansible/roles
+mkdir -p /root/.ssh
+echo "${private_key}" | base64 -d > /root/.ssh/id_rsa
+chmod 700 /root/.ssh/id_rsa
+ssh-keyscan gitlab.com >> /root/.ssh/known_hosts
+ansible-galaxy install -r requirements.yaml
+rm /root/.ssh/id_rsa
 
-# Add hostname for bastion host
-sudo hostnamectl set-hostname bastion-"${environment}"
-sudo sed 's|localhost|"${environment}"|g' /etc/hosts
 
-# Install AWSCLI
-sudo apt install awscli -y
-
-# Associate instance with Elastic IP
-aws ec2 --region eu-west-1 associate-address \
---instance-id "$(curl http://169.254.169.254/latest/meta-data/instance-id)" \
---allocation-id "${eip}" --allow-reassociation
-sudo apt-get update -y
-
-# Install MySQL Server and Client
-sudo apt install mysql-server mysql-client -y
-
-# Restart host
-sudo reboot
+# Run ansible playbook
+ansible-playbook \
+ -e networking_environment="${environment}" \
+ -e bastion_ip="${bastion_ip}"
+playbook.yaml

@@ -1,0 +1,3 @@
+---
+- src: git@gitlab.com:evesleep/infrastructure/ansible-users-role.git
+  scm: git
