@@ -2,7 +2,16 @@
 
 # shellcheck disable=SC2154
 
+# Update and Upgrade packages
+
+sudo apt-get update && sudo apt-get -y upgrade
+
+# Install AWSCLI
+
+sudo apt-get install awscli=1.14.44-1ubuntu1
+
 # Copy Ansible files from S3 bucket
+
 aws s3 cp s3://"${ansible_bucket}"/"${ansible_prefix}" . --recursive
 
 # Install ansible users role
