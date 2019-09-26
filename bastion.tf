@@ -138,6 +138,7 @@ data "aws_iam_policy_document" "bastion" {
   statement {
     actions = [
       "ec2:AssociateAddress",
+      "s3:*"
     ]
     resources = [
       "*",
