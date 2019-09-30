@@ -5,4 +5,4 @@ destination:
   host: logs5.papertrailapp.com
   port: 41638
   protocol: tls
-hostname: "bastion-{{ environment }}-{{ instance_id.content }}"
+hostname: "bastion-{{ networking_environment }}-{{ instance_id.content }}"

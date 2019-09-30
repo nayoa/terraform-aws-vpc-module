@@ -6,7 +6,7 @@
 
 - name: Set the hostname
   hostname:
-    name: "bastion-{{ environment }}"
+    name: "bastion-{{ networking_environment }}"
 
 - name: Find EC2 Instance ID
   uri:

@@ -1,4 +1,9 @@
 ---
+- name: Copy log_files.yml.j2 to /etc/log_files.yml
+  template:
+    src: log_files.yml.j2
+    dest: /etc/log_files.yml
+
 - name: Setup rsyslog
   lineinfile:
     path: /etc/rsyslog.conf
@@ -27,11 +32,6 @@
     remote_src: yes
     mode: 0755
 
-- name: Copy log_files.yml.j2 to /etc/log_files.yml
-  template:
-    src: log_files.yml.j2
-    dest: /etc/log_files.yml
-
 - name: Start the remote_syslog daemon
   shell: remote_syslog
 
@@ -56,3 +56,4 @@
   shell: reboot
   become: yes
   args:
+    warn: no
