@@ -23,7 +23,6 @@ ssh-keyscan gitlab.com >> /root/.ssh/known_hosts
 ansible-galaxy install -r requirements.yaml
 rm /root/.ssh/id_rsa
 
-
 # Run ansible playbook
 ansible-playbook \
  -e networking_environment="${environment}" \
