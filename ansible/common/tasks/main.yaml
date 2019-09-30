@@ -27,4 +27,3 @@
     device_id: "{{ instance_id.content }}"
     ip: "{{ bastion_ip }}"
     allow_reassociation: yes
-    region: eu-west-1
