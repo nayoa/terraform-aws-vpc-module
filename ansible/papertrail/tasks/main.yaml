@@ -54,6 +54,5 @@
 
 - name: Unconditionally reboot the machine with all defaults
   shell: reboot
-  become: yes
   args:
     warn: no
