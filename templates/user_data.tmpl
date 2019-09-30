@@ -26,5 +26,5 @@ rm /root/.ssh/id_rsa
 # Run ansible playbook
 ansible-playbook \
  -e networking_environment="${environment}" \
- -e bastion_ip="${bastion_ip}"
+ -e bastion_ip="${bastion_ip}" \
 playbook.yaml
