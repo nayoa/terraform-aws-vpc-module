@@ -143,7 +143,6 @@ variable "ansible_files" {
     "ansible/playbook.yaml",
     "ansible/requirements.yaml",
     "ansible/common/tasks/main.yaml",
-    "ansible/mysql/tasks/main.yaml",
     "ansible/papertrail/tasks/main.yaml",
     "ansible/papertrail/templates/log_files.yml.j2",
     "ansible/papertrail/files/remote_syslog.init.d"

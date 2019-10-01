@@ -82,9 +82,9 @@ resource "aws_autoscaling_group" "bastion" {
 ### Security Group
 
 resource "aws_security_group" "bastion" {
-  name        = "bastion-${var.name}"
+  name_prefix = "bastion-${var.name}-"
   vpc_id      = aws_vpc.main.id
-  description = "${var.name} - Bastion Security Group"
+  description = "Security Group for Bastion ${local.environment}"
 
   ingress {
     from_port   = 22
